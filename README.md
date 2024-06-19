@@ -34,6 +34,6 @@ Run the YouTube Slide Extractor with the following command:
 python slide_extractor.py "https://www.youtube.com/sample_url" --frame_rate 1 --output_folder "slides"
 ```
 
-* Replace "https://www.youtube.com/watch?v=sample_url" with the desired YouTube video URL.
+* Replace "https://www.youtube.com/sample_url" with the desired YouTube video URL.
 * Adjust --frame_rate (default: 1 frame per second) to control the extraction rate between frames. A higher rate captures more slides but takes longer.
 * Adjust --output_folder (default: "slides") to specify the folder where the extracted slides will be saved.
