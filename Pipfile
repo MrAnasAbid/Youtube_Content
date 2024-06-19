@@ -8,6 +8,7 @@ pytube = "*"
 opencv-python = "*"
 numpy = "*"
 scikit-learn = "*"
+click = "*"
 
 [dev-packages]
 

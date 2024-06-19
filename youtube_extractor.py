@@ -1,17 +1,19 @@
 import os
 import cv2
 import numpy as np
+import click
 from pytube import YouTube
 from sklearn.metrics import mean_squared_error
 
-# Step 1: Download the video
 def download_video(url, output_path='video.mp4'):
+    print(f'Downloading video from {url}...')
     yt = YouTube(url)
     stream = yt.streams.filter(progressive=True, file_extension='mp4').first()
     stream.download(filename=output_path)
+    print('Video downloaded successfully!')
 
-# Step 2: Extract frames from the video
 def extract_frames(video_path, frame_rate=1):
+    print(f'Extracting frames from {video_path}...')
     cap = cv2.VideoCapture(video_path)
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -27,7 +29,6 @@ def extract_frames(video_path, frame_rate=1):
     cap.release()
     return frames
 
-# Step 3: Identify unique slides by comparing consecutive frames
 def is_unique_frame(frame1, frame2, threshold=30):
     gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
     gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
@@ -35,6 +36,7 @@ def is_unique_frame(frame1, frame2, threshold=30):
     return mse > threshold
 
 def extract_unique_slides(frames):
+    print('Extracting unique slides from all the frames...')
     unique_slides = []
     prev_frame = None
     
@@ -48,22 +50,30 @@ def extract_unique_slides(frames):
 # Step 4: Save the unique slides to a folder
 def save_slides(slides, output_folder='slides'):
     if not os.path.exists(output_folder):
+        print(f'Creating folder {output_folder} to save slides...')
         os.makedirs(output_folder)
+    else:
+        print(f'Folder {output_folder} already exists. Saving slides...')
     
     for i, slide in enumerate(slides):
+        print(f'Saving slide {i+1}...')
         slide_path = os.path.join(output_folder, f'slide_{i+1}.png')
         cv2.imwrite(slide_path, slide)
+    
+    print('Slides saved successfully!')
 
 # Main function to process the video and extract slides
-def main(url):
+@click.command()
+@click.argument('url')
+@click.option('--frame_rate', default=1, help='Frame rate to extract frames from the video.')
+@click.option('--output_folder', default='slides', help='Folder to save the extracted slides.')
+def main(url, frame_rate, output_folder):
     video_path = 'video.mp4'
     download_video(url, video_path)
     
-    frames = extract_frames(video_path, frame_rate=1)  # Adjust frame_rate as needed
+    frames = extract_frames(video_path, frame_rate)  # Adjust frame_rate as needed
     unique_slides = extract_unique_slides(frames)
-    save_slides(unique_slides)
+    save_slides(unique_slides, output_folder)
 
-# Run the main function with the provided YouTube URL
 if __name__ == '__main__':
-    video_url = 'https://www.youtube.com/watch?v=Bqoz7b7nFyk'
-    main(video_url)
+    main()
