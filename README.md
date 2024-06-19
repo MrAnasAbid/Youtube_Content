@@ -10,9 +10,10 @@ This project extracts unique slides from a YouTube video. It efficiently downloa
 ## Installation
 
 1. Clone the repository:
-bash
+```bash
 git clone https://github.com/yourusername/youtube-slide-extractor.git
 cd youtube-slide-extractor
+```
 
 2. Install dependencies:
 
